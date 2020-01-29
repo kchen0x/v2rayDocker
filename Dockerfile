@@ -3,7 +3,7 @@
 #
 FROM abiosoft/caddy:builder as builder
 
-ARG version="0.11.1"
+ARG version="0.11.5"
 ARG plugins="git,cors,realip,expires,cache"
 ARG enable_telemetry="false"
 
