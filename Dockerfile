@@ -8,7 +8,7 @@ ARG plugins="git,cors,realip,expires,cache,cloudflare"
 
 
 RUN go get -v github.com/abiosoft/parent
-RUN VERSION=${version} PLUGINS=${plugins} ENABLE_TELEMETRY=false /bin/sh /usr/bin/builder.sh
+RUN VERSION=${version} PLUGINS=${plugins} ENABLE_TELEMETRY=true /bin/sh /usr/bin/builder.sh
 
 #
 # Final stage
@@ -88,7 +88,7 @@ LABEL caddy_version="$version"
 ENV ACME_AGREE="false"
 
 # Telemetry Stats
-ENV ENABLE_TELEMETRY="false"
+ENV ENABLE_TELEMETRY="true"
 
 RUN apk add --no-cache \
     ca-certificates \
