@@ -1,13 +1,13 @@
 # 一键 V2ray websocket + TLS
 
-一键就完事了，扫描二维码 或者 复制 vmess 链接 无需关心复杂的 V2ray 配置，websocket + tls 更安全，伪装更好。
+一键就完事了，复制 vmess 链接 无需关心复杂的 V2ray 配置，websocket + tls 更安全，伪装更好。
 
 * 自动生成 UUID （调用系统 UUID 库）
 * 默认使用 caddy 自动获取证书
 * 自动生成 安卓 v2rayNG vmess 链接
 * 自动生成 iOS shadowrocket vmess 链接
-* 自动生成 iOS 二维码
-* Simple fake website
+* 自动生成 surgio 使用的配置格式
+* 简单的混淆主页
 
 ## 使用方法
 
