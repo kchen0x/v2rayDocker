@@ -16,7 +16,7 @@ FROM alpine:3.10
 # process wrapper
 LABEL maintainer "kchen0x kchen0x@gmail.com"
 
-# V2RAY
+# V2RAY & KCPTUN
 ARG TZ="Asia/Shanghai"
 
 ENV TZ ${TZ}
@@ -24,16 +24,20 @@ ENV V2RAY_VERSION v4.19.1
 ENV V2RAY_LOG_DIR /var/log/v2ray
 ENV V2RAY_CONFIG_DIR /etc/v2ray/
 ENV V2RAY_DOWNLOAD_URL https://github.com/v2ray/v2ray-core/releases/download/${V2RAY_VERSION}/v2ray-linux-64.zip
+ENV KCPTUN_DOWNLOAD_URL https://github.com/xtaci/kcptun/releases/download/v20200226/kcptun-linux-arm64-20200226.tar.gz
 
 RUN apk upgrade --update \
     && apk add \
         bash \
         tzdata \
         curl \
+        wget \
+        tar \
     && mkdir -p \ 
         ${V2RAY_LOG_DIR} \
         ${V2RAY_CONFIG_DIR} \
         /tmp/v2ray \
+        /tmp/kcptun \
     && curl -L -H "Cache-Control: no-cache" -o /tmp/v2ray/v2ray.zip ${V2RAY_DOWNLOAD_URL} \
     && pwd \
     && unzip /tmp/v2ray/v2ray.zip -d /tmp/v2ray/ \
@@ -42,10 +46,13 @@ RUN apk upgrade --update \
     && mv /tmp/v2ray/vpoint_vmess_freedom.json /etc/v2ray/config.json \
     && chmod +x /usr/bin/v2ray \
     && chmod +x /usr/bin/v2ctl \
-    && apk del curl \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone \
-    && rm -rf /tmp/v2ray /var/cache/apk/*
+    && wget --no-check-certificate "${KCPTUN_DOWNLOAD_URL}" -O /tmp/kcptun/kcptun.tar.gz \
+    && pwd \
+    && mkdir -p /usr/local/kcptun && tar -zxf /tmp/kcptun/kcptun.tar.gz -C /usr/local/kcptun \
+    && apk del curl wget\
+    && rm -rf /tmp/kcptun /tmp/v2ray /var/cache/apk/*
 
 # ADD entrypoint.sh /entrypoint.sh
 WORKDIR /srv
@@ -86,7 +93,7 @@ COPY html /srv/html
 # COPY package.json /etc/package.json
 # install process wrapper
 COPY --from=builder /go/bin/parent /bin/parent
-ADD caddy.sh /caddy.sh
-EXPOSE 443 80
-ENTRYPOINT ["/caddy.sh"]
+ADD docker-entrypoint.sh /docker-entrypoint.sh
+EXPOSE 443 80 29900
+ENTRYPOINT ["/docker-entrypoint.sh"]
 # CMD ["--conf", "/etc/Caddyfile", "--log", "stdout", "--agree=$ACME_AGREE"]
