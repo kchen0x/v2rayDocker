@@ -3,6 +3,7 @@
 domain="$1"
 psname="$2"
 uuid="51be9a06-299f-43b9-b713-1ec5eb76e3d7"
+path="one"
 
 if  [ ! "$3" ] ;then
     uuid=$(uuidgen)
@@ -10,6 +11,13 @@ if  [ ! "$3" ] ;then
 else
     uuid="$3"
 fi
+
+if  [ ! "$4" ] ;then
+    echo "path 将会使用默认值 /one"
+else
+    path="$4"
+fi
+
 cat > /etc/Caddyfile <<'EOF'
 domain
 {
@@ -22,6 +30,7 @@ domain
 }
 EOF
 sed -i "s/domain/${domain}/" /etc/Caddyfile
+sed -i "s/one/${path}/" /etc/Caddyfile
 
 # v2ray
 cat > /etc/v2ray/config.json <<'EOF'
@@ -55,6 +64,7 @@ cat > /etc/v2ray/config.json <<'EOF'
 }
 EOF
 sed -i "s/uuid/${uuid}/" /etc/v2ray/config.json
+sed -i "s/one/${path}/" /etc/v2ray/config.json
 
 # js
 cat > /srv/sebs.js <<'EOF'
@@ -76,6 +86,7 @@ if [ "$psname" != "" ] && [ "$psname" != "-c" ]; then
   sed -i "s/sebsclub/${psname}/" /srv/sebs.js
   sed -i "s/domain/${domain}/" /srv/sebs.js
   sed -i "s/uuid/${uuid}/" /srv/sebs.js
+  sed -i "s/\/one/\/${path}/" /srv/sebs.js
 else
   $*
 fi

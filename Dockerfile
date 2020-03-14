@@ -14,7 +14,7 @@ RUN VERSION=${version} PLUGINS=${plugins} ENABLE_TELEMETRY=false /bin/sh /usr/bi
 #
 FROM alpine:3.10
 # process wrapper
-LABEL maintainer "sebs sebsclub@outlook.com"
+LABEL maintainer "kchen0x kchen0x@gmail.com"
 
 # V2RAY
 ARG TZ="Asia/Shanghai"

@@ -7,12 +7,10 @@ fs.readFile('sebs.js', 'utf8', function (err, data) {
     console.log(ios(node).toString())
     console.log('-----------------安卓 v2rayNG链接-----------------')
     console.log(android(node).toString())
-
-    console.log('-----------------Android v2rayNG二维码------------------')
-    qrcode.generate(android(node).toString(), {small: true},function (qrcode) {
-        console.log(qrcode);
-    });
+    console.log('-----------------Surgio Provider-----------------')
+    console.log(surgio(node))
 });
+
 function ios(node) {
     !node.method ? node.method = 'chacha20-poly1305' : ''
     let v2rayBase = '' + node.method + ':' + node.id + '@' + node.add + ':' + node.port
@@ -38,6 +36,26 @@ function android(node) {
     delete node.method
     let baseV2ray = Buffer.from(JSON.stringify(node)).toString('base64')
     let server = Buffer.from('vmess://' + baseV2ray)
+    return server
+}
+
+function surgio(node) {
+    json = {
+        nodeName: 'name',
+        type: 'vmess',
+        hostname: node.add,
+        method: 'auto', // 仅支持 auto/aes-128-gcm/chacha20-ietf-poly1305/none
+        network: 'ws', // 仅支持 tcp/ws
+        alterId: '64',
+        path: node.path,
+        port: 443,
+        tls: true,
+        host: node.add,
+        uuid: node.id,
+        tfo: false, // TCP Fast Open
+        tls13: false, // TLS 1.3, TLS 开启时有效
+      }
+    let server = JSON.stringify(json)
     return server
 }
 
